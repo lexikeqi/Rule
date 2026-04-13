@@ -1,0 +1,395 @@
+# Clash Mi / Mihomo 覆写配置
+# 由 Shadowrocket 配置转换而来，尽量保持原有分组、规则与 DNS 逻辑不变。
+#
+# 说明：
+# - 以下 Shadowrocket 专有项没有稳定的 1:1 Clash 映射，故未直接写入：
+#   bypass-system, dns-direct-system, icmp-auto-reply,
+#   always-reject-url-rewrite, private-ip-answer,
+#   dns-direct-fallback-proxy, udp-policy-not-supported-behaviour,
+#   block-quic(all-proxy)
+# - 此覆写文件默认假定你的基础配置/订阅里已经存在以下代理提供者或同名代理集合：
+#   MITCE, SUBSCHECK, 白月光
+# - 如 Clash Mi 的“覆写/扩展配置”对数组采用替换而不是追加，本文件中的
+#   proxy-groups / rules / rewrite / mitm 会以本文件为准。
+
+# DNS
+dns:
+  enable: true
+  ipv6: true
+  use-hosts: true
+  use-system-hosts: true
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+    - 223.5.5.5
+    - 119.29.29.29
+  fallback:
+    - system
+  nameserver-policy:
+    '+.apple.com':
+      - system
+    '+.icloud.com':
+      - system
+
+# TUN
+tun:
+  enable: true
+  stack: system
+  auto-route: true
+  auto-detect-interface: true
+  route-exclude-address:
+    - 10.0.0.0/8
+    - 100.64.0.0/10
+    - 127.0.0.0/8
+    - 169.254.0.0/16
+    - 172.16.0.0/12
+    - 192.0.0.0/24
+    - 192.0.2.0/24
+    - 192.88.99.0/24
+    - 192.168.0.0/16
+    - 198.51.100.0/24
+    - 203.0.113.0/24
+    - 224.0.0.0/4
+    - 255.255.255.255/32
+    - 239.255.255.250/32
+  dns-hijack:
+    - 8.8.8.8:53
+    - 8.8.4.4:53
+
+# Hosts
+hosts:
+  localhost: 127.0.0.1
+
+# Proxy Groups
+proxy-groups:
+  - name: "🚀 手动选择"
+    type: select
+    proxies:
+      - DIRECT
+      - "Ⓜ️ Mitce"
+      - "🌐 Subscheck"
+      - "☪️ 白月光"
+      - "🇸🇬 SG狮城"
+      - "🇯🇵 JP日本"
+      - "🇺🇸 US美国"
+      - "🇭🇰 HK香港"
+      - "🚩 TW台湾"
+
+  - name: "📱 Telegram"
+    type: select
+    proxies:
+      - "🇸🇬 SG狮城"
+      - "🇯🇵 JP日本"
+      - "🇺🇸 US美国"
+
+  - name: "💽 Spotify"
+    type: select
+    proxies:
+      - "🇸🇬 SG狮城"
+      - "🇯🇵 JP日本"
+      - "🇺🇸 US美国"
+      - "🇭🇰 HK香港"
+      - "🚩 TW台湾"
+
+  - name: "🤖 AI"
+    type: select
+    proxies:
+      - "🇸🇬 SG狮城"
+      - "🇯🇵 JP日本"
+      - "🇺🇸 US美国"
+
+  - name: "▶️ Youtube"
+    type: select
+    proxies:
+      - "🇸🇬 SG狮城"
+      - "🇯🇵 JP日本"
+      - "🇺🇸 US美国"
+      - "🇭🇰 HK香港"
+      - "🚩 TW台湾"
+
+  - name: "💻 Github"
+    type: select
+    proxies:
+      - DIRECT
+      - "🇸🇬 SG狮城"
+      - "🇺🇸 US美国"
+
+  - name: "🎵 Tiktok"
+    type: select
+    proxies:
+      - "🇸🇬 SG狮城"
+      - "🇯🇵 JP日本"
+      - "🇺🇸 US美国"
+      - "🇭🇰 HK香港"
+      - "🚩 TW台湾"
+
+  - name: "❎ Twitter"
+    type: select
+    proxies:
+      - "🇸🇬 SG狮城"
+      - "🇺🇸 US美国"
+
+  - name: "🎵 抖音"
+    type: select
+    proxies:
+      - DIRECT
+      - "🇸🇬 SG狮城"
+      - "🇯🇵 JP日本"
+      - "🇺🇸 US美国"
+      - "🇭🇰 HK香港"
+      - "🚩 TW台湾"
+
+  - name: "📕 今日头条"
+    type: select
+    proxies:
+      - DIRECT
+      - "🇸🇬 SG狮城"
+      - "🇯🇵 JP日本"
+      - "🇺🇸 US美国"
+      - "🇭🇰 HK香港"
+      - "🚩 TW台湾"
+
+  - name: "🍎 Apple"
+    type: select
+    proxies:
+      - DIRECT
+      - "🇸🇬 SG狮城"
+      - "🇺🇸 US美国"
+
+  - name: "🔵 Google"
+    type: select
+    proxies:
+      - "🇸🇬 SG狮城"
+      - "🇯🇵 JP日本"
+      - "🇺🇸 US美国"
+      - "🇭🇰 HK香港"
+      - "🚩 TW台湾"
+
+  - name: "Ⓜ️ Microsoft"
+    type: select
+    proxies:
+      - DIRECT
+      - "🇸🇬 SG狮城"
+      - "🇺🇸 US美国"
+
+  - name: "🇸🇬 SG狮城"
+    type: select
+    use:
+      - MITCE
+    filter: "🇸🇬|SG|新加坡|狮城"
+
+  - name: "🇯🇵 JP日本"
+    type: select
+    use:
+      - MITCE
+    filter: "🇯🇵|JP|日本"
+
+  - name: "🇺🇸 US美国"
+    type: select
+    use:
+      - 白月光
+    filter: "🇺🇸|US|美国"
+
+  - name: "🇭🇰 HK香港"
+    type: select
+    use:
+      - 白月光
+    filter: "🇭🇰|HK|香港"
+
+  - name: "🚩 TW台湾"
+    type: select
+    use:
+      - 白月光
+    filter: "🇹🇼|TW|台湾|台灣"
+
+  - name: "Ⓜ️ Mitce"
+    type: select
+    use:
+      - MITCE
+
+  - name: "🌐 Subscheck"
+    type: select
+    use:
+      - SUBSCHECK
+
+  - name: "☪️ 白月光"
+    type: select
+    use:
+      - 白月光
+
+# Rule Providers
+rule-providers:
+  aiweibaobei:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/aiweibaobei.list
+    url: https://raw.githubusercontent.com/lexikeqi/Rule/refs/heads/main/Rules/aiweibaobei.list
+    interval: 86400
+
+  antiad:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/AntiAD.list
+    url: https://yfamilys.com/rule/AntiAD.list
+    interval: 86400
+
+  telegram:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/Telegram.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Telegram/Telegram.list
+    interval: 86400
+
+  spotify:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/Spotify.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Spotify/Spotify.list
+    interval: 86400
+
+  ai:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/AI.txt
+    url: https://raw.githubusercontent.com/iab0x00/ProxyRules/main/Rule/AI.txt
+    interval: 86400
+
+  youtube:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/YouTube.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/YouTube/YouTube.list
+    interval: 86400
+
+  github:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/GitHub.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/GitHub/GitHub.list
+    interval: 86400
+
+  tiktok:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/TikTok.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/TikTok/TikTok.list
+    interval: 86400
+
+  twitter:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/Twitter.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Twitter/Twitter.list
+    interval: 86400
+
+  douyin:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/DouYin.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/DouYin/DouYin.list
+    interval: 86400
+
+  jinritoutiao:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/jinritoutiao.list
+    url: https://raw.githubusercontent.com/lexikeqi/Rule/refs/heads/main/Rules/jinritoutiao.list
+    interval: 86400
+
+  apple:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/Apple.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Apple/Apple.list
+    interval: 86400
+
+  google:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/Google.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Google/Google.list
+    interval: 86400
+
+  microsoft:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/Microsoft.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Microsoft/Microsoft.list
+    interval: 86400
+
+  global:
+    type: http
+    behavior: classical
+    format: text
+    path: ./ruleset/Global.list
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Global/Global.list
+    interval: 86400
+
+# Rules
+rules:
+  # 对应 Shadowrocket skip-proxy / bypass-system
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+  - DOMAIN,localhost,DIRECT
+  - DOMAIN-SUFFIX,local,DIRECT
+  - DOMAIN,captive.apple.com,DIRECT
+  - DOMAIN-SUFFIX,ccb.com,DIRECT
+  - DOMAIN-SUFFIX,abchina.com.cn,DIRECT
+  - DOMAIN-SUFFIX,psbc.com,DIRECT
+  - DOMAIN,www.baidu.com,DIRECT
+  - DOMAIN,www.163.com,DIRECT
+
+  - RULE-SET,aiweibaobei,REJECT
+  - RULE-SET,antiad,REJECT
+
+  - RULE-SET,telegram,"📱 Telegram"
+  - RULE-SET,spotify,"💽 Spotify"
+  - RULE-SET,ai,"🤖 AI"
+  - RULE-SET,youtube,"▶️ Youtube"
+  - RULE-SET,github,"💻 Github"
+  - RULE-SET,tiktok,"🎵 Tiktok"
+  - RULE-SET,twitter,"❎ Twitter"
+  - RULE-SET,douyin,"🎵 抖音"
+  - RULE-SET,jinritoutiao,"📕 今日头条"
+  - RULE-SET,apple,"🍎 Apple"
+  - RULE-SET,google,"🔵 Google"
+  - RULE-SET,microsoft,"Ⓜ️ Microsoft"
+
+  - RULE-SET,global,"🚀 手动选择"
+  - MATCH,DIRECT
+
+# URL Rewrite
+rewrite:
+  - regex: '^https?://(www\.)?g\.cn'
+    match: url
+    action: '302'
+    target: https://www.google.com
+
+  - regex: '^https?://(www\.)?google\.cn'
+    match: url
+    action: '302'
+    target: https://www.google.com
+
+# MITM
+mitm:
+  enable: true
+  hostnames:
+    - '*.google.cn'
