@@ -1,18 +1,14 @@
-# Clash Mi / Mihomo 覆写配置
-# 由 Shadowrocket 配置转换而来，尽量保持原有分组、规则与 DNS 逻辑不变。
-#
+# Clash Mi / Mihomo 覆写配置（通用兼容版）
 # 说明：
-# - 以下 Shadowrocket 专有项没有稳定的 1:1 Clash 映射，故未直接写入：
-#   bypass-system, dns-direct-system, icmp-auto-reply,
-#   always-reject-url-rewrite, private-ip-answer,
-#   dns-direct-fallback-proxy, udp-policy-not-supported-behaviour,
-#   block-quic(all-proxy)
-# - 此覆写文件默认假定你的基础配置/订阅里已经存在以下代理提供者或同名代理集合：
-#   MITCE, SUBSCHECK, 白月光
-# - 如 Clash Mi 的“覆写/扩展配置”对数组采用替换而不是追加，本文件中的
-#   proxy-groups / rules / rewrite / mitm 会以本文件为准。
+# 1) 这版不依赖 MITCE / SUBSCHECK / 白月光 这些 provider 名称
+# 2) 地区分组直接从“现有全部节点”里按关键词筛选
+# 3) 保留你的原有分组名、规则链接、DNS 与直连逻辑
+# 4) URL Rewrite / MITM 先保留为注释，优先保证导入稳定
 
-# DNS
+profile:
+  store-selected: true
+  store-fake-ip: true
+
 dns:
   enable: true
   ipv6: true
@@ -26,7 +22,7 @@ dns:
     - https://dns.alidns.com/dns-query
     - 223.5.5.5
     - 119.29.29.29
-  fallback:
+  direct-nameserver:
     - system
   nameserver-policy:
     '+.apple.com':
@@ -34,12 +30,14 @@ dns:
     '+.icloud.com':
       - system
 
-# TUN
 tun:
   enable: true
   stack: system
   auto-route: true
   auto-detect-interface: true
+  dns-hijack:
+    - 8.8.8.8:53
+    - 8.8.4.4:53
   route-exclude-address:
     - 10.0.0.0/8
     - 100.64.0.0/10
@@ -53,18 +51,74 @@ tun:
     - 198.51.100.0/24
     - 203.0.113.0/24
     - 224.0.0.0/4
-    - 255.255.255.255/32
     - 239.255.255.250/32
-  dns-hijack:
-    - 8.8.8.8:53
-    - 8.8.4.4:53
+    - 255.255.255.255/32
 
-# Hosts
 hosts:
   localhost: 127.0.0.1
 
-# Proxy Groups
 proxy-groups:
+  # 兼容辅助组
+  - name: "🧩 全部节点"
+    type: select
+    include-all: true
+    exclude-type: direct
+
+  - name: "♻️ 自动选择"
+    type: url-test
+    include-all: true
+    exclude-type: direct
+    tolerance: 10
+    interval: 300
+
+  # 保留你原来的三个来源组名，但改成通用可用
+  - name: "Ⓜ️ Mitce"
+    type: select
+    include-all: true
+    exclude-type: direct
+
+  - name: "🌐 Subscheck"
+    type: select
+    include-all: true
+    exclude-type: direct
+
+  - name: "☪️ 白月光"
+    type: select
+    include-all: true
+    exclude-type: direct
+
+  # 地区组：直接按全部节点筛选
+  - name: "🇸🇬 SG狮城"
+    type: select
+    include-all: true
+    exclude-type: direct
+    filter: "(?i)(🇸🇬|\\bSG\\b|新加坡|狮城|singapore)"
+
+  - name: "🇯🇵 JP日本"
+    type: select
+    include-all: true
+    exclude-type: direct
+    filter: "(?i)(🇯🇵|\\bJP\\b|日本|japan)"
+
+  - name: "🇺🇸 US美国"
+    type: select
+    include-all: true
+    exclude-type: direct
+    filter: "(?i)(🇺🇸|\\bUS\\b|美国|united states|unitedstates|america)"
+
+  - name: "🇭🇰 HK香港"
+    type: select
+    include-all: true
+    exclude-type: direct
+    filter: "(?i)(🇭🇰|\\bHK\\b|香港|hong kong|hongkong)"
+
+  - name: "🚩 TW台湾"
+    type: select
+    include-all: true
+    exclude-type: direct
+    filter: "(?i)(🇹🇼|\\bTW\\b|台湾|台灣|taiwan)"
+
+  # 业务组：尽量保留你原顺序和逻辑
   - name: "🚀 手动选择"
     type: select
     proxies:
@@ -77,6 +131,8 @@ proxy-groups:
       - "🇺🇸 US美国"
       - "🇭🇰 HK香港"
       - "🚩 TW台湾"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "📱 Telegram"
     type: select
@@ -84,6 +140,8 @@ proxy-groups:
       - "🇸🇬 SG狮城"
       - "🇯🇵 JP日本"
       - "🇺🇸 US美国"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "💽 Spotify"
     type: select
@@ -93,6 +151,8 @@ proxy-groups:
       - "🇺🇸 US美国"
       - "🇭🇰 HK香港"
       - "🚩 TW台湾"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "🤖 AI"
     type: select
@@ -100,15 +160,19 @@ proxy-groups:
       - "🇸🇬 SG狮城"
       - "🇯🇵 JP日本"
       - "🇺🇸 US美国"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "▶️ Youtube"
     type: select
     proxies:
+      - "🇺🇸 US美国"
       - "🇸🇬 SG狮城"
       - "🇯🇵 JP日本"
-      - "🇺🇸 US美国"
       - "🇭🇰 HK香港"
       - "🚩 TW台湾"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "💻 Github"
     type: select
@@ -116,21 +180,27 @@ proxy-groups:
       - DIRECT
       - "🇸🇬 SG狮城"
       - "🇺🇸 US美国"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "🎵 Tiktok"
     type: select
     proxies:
+      - "🇺🇸 US美国"
       - "🇸🇬 SG狮城"
       - "🇯🇵 JP日本"
-      - "🇺🇸 US美国"
       - "🇭🇰 HK香港"
       - "🚩 TW台湾"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "❎ Twitter"
     type: select
     proxies:
       - "🇸🇬 SG狮城"
       - "🇺🇸 US美国"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "🎵 抖音"
     type: select
@@ -141,6 +211,8 @@ proxy-groups:
       - "🇺🇸 US美国"
       - "🇭🇰 HK香港"
       - "🚩 TW台湾"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "📕 今日头条"
     type: select
@@ -151,6 +223,8 @@ proxy-groups:
       - "🇺🇸 US美国"
       - "🇭🇰 HK香港"
       - "🚩 TW台湾"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "🍎 Apple"
     type: select
@@ -158,6 +232,8 @@ proxy-groups:
       - DIRECT
       - "🇸🇬 SG狮城"
       - "🇺🇸 US美国"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "🔵 Google"
     type: select
@@ -167,6 +243,8 @@ proxy-groups:
       - "🇺🇸 US美国"
       - "🇭🇰 HK香港"
       - "🚩 TW台湾"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
   - name: "Ⓜ️ Microsoft"
     type: select
@@ -174,53 +252,9 @@ proxy-groups:
       - DIRECT
       - "🇸🇬 SG狮城"
       - "🇺🇸 US美国"
+      - "♻️ 自动选择"
+      - "🧩 全部节点"
 
-  - name: "🇸🇬 SG狮城"
-    type: select
-    use:
-      - MITCE
-    filter: "🇸🇬|SG|新加坡|狮城"
-
-  - name: "🇯🇵 JP日本"
-    type: select
-    use:
-      - MITCE
-    filter: "🇯🇵|JP|日本"
-
-  - name: "🇺🇸 US美国"
-    type: select
-    use:
-      - 白月光
-    filter: "🇺🇸|US|美国"
-
-  - name: "🇭🇰 HK香港"
-    type: select
-    use:
-      - 白月光
-    filter: "🇭🇰|HK|香港"
-
-  - name: "🚩 TW台湾"
-    type: select
-    use:
-      - 白月光
-    filter: "🇹🇼|TW|台湾|台灣"
-
-  - name: "Ⓜ️ Mitce"
-    type: select
-    use:
-      - MITCE
-
-  - name: "🌐 Subscheck"
-    type: select
-    use:
-      - SUBSCHECK
-
-  - name: "☪️ 白月光"
-    type: select
-    use:
-      - 白月光
-
-# Rule Providers
 rule-providers:
   aiweibaobei:
     type: http
@@ -342,9 +376,8 @@ rule-providers:
     url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Global/Global.list
     interval: 86400
 
-# Rules
 rules:
-  # 对应 Shadowrocket skip-proxy / bypass-system
+  # 对应原 skip-proxy / bypass-system
   - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
   - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
   - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
@@ -376,20 +409,13 @@ rules:
   - RULE-SET,global,"🚀 手动选择"
   - MATCH,DIRECT
 
-# URL Rewrite
-rewrite:
-  - regex: '^https?://(www\.)?g\.cn'
-    match: url
-    action: '302'
-    target: https://www.google.com
-
-  - regex: '^https?://(www\.)?google\.cn'
-    match: url
-    action: '302'
-    target: https://www.google.com
-
-# MITM
-mitm:
-  enable: true
-  hostnames:
-    - '*.google.cn'
+# -------------------------------------------------
+# 下面是你原 Shadowrocket 配置里的 Rewrite / MITM，先保留备注：
+#
+# [URL Rewrite]
+# ^https?://(www.)?g.cn https://www.google.com 302
+# ^https?://(www.)?google.cn https://www.google.com 302
+#
+# [MITM]
+# hostname = *.google.cn
+# -------------------------------------------------
