@@ -17,3 +17,10 @@ DOMAIN-SUFFIX,adsapi.aiwei365.com,REJECT
 DOMAIN-SUFFIX,de.ad.gameley.com,REJECT
 DOMAIN-SUFFIX,jp.ad.gameley.com,REJECT
 DOMAIN-KEYWORD,ad.aiwei365,REJECT
+
+DOMAIN-KEYWORD,app.api.aiwei365.com,REJECT
+DOMAIN-KEYWORD,extshort.weixin.qq.com,REJECT
+DOMAIN-KEYWORD,songzhaopian.com,REJECT
+DOMAIN-KEYWORD,api.songzhaopian.com,REJECT
+DOMAIN-KEYWORD,img06.songzhaopian.cn,REJECT
+DOMAIN-KEYWORD,songzhaopian.cn,REJECT
