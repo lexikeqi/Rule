@@ -18,9 +18,8 @@ DOMAIN-SUFFIX,de.ad.gameley.com
 DOMAIN-SUFFIX,jp.ad.gameley.com
 DOMAIN-KEYWORD,ad.aiwei365
 
-DOMAIN-SUFFIX,app.api.aiwei365.com
-DOMAIN-SUFFIX,extshort.weixin.qq.com
-# DOMAIN-SUFFIX,songzhaopian.com
-# DOMAIN-SUFFIX,api.songzhaopian.com
-# DOMAIN-SUFFIX,img06.songzhaopian.cn
-# DOMAIN-SUFFIX,songzhaopian.cn
+DOMAIN-KEYWORD,extshort.weixin.qq.com
+DOMAIN-SUFFIX,songzhaopian.com
+DOMAIN-SUFFIX,api.songzhaopian.com
+DOMAIN-SUFFIX,img06.songzhaopian.cn
+DOMAIN-SUFFIX,songzhaopian.cn
