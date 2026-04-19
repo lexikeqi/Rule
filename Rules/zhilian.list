@@ -1,3 +1,13 @@
-DOMAIN-SUFFIX,eastmoney.com
-DOMAIN-SUFFIX,dfcfw.com
-DOMAIN-SUFFIX,emsec.hk
+# 东方财富全直连
+DOMAIN-KEYWORD,eastmoney,DIRECT
+DOMAIN-SUFFIX,dfcfw.com,DIRECT
+DOMAIN-SUFFIX,emsec.hk,DIRECT
+
+DOMAIN,myfavor-collect.eastmoney.com
+DOMAIN,datacenter.eastmoney.com
+DOMAIN,httpdns5.eastmoney.com
+DOMAIN,eminterservice.securities.eastmoney.com
+
+# 防止HTTPDNS干扰
+IP-CIDR,182.0.0.0/8,DIRECT,no-resolve
+IP-CIDR,183.0.0.0/8,DIRECT,no-resolve
