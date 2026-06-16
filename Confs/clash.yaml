@@ -1,31 +1,29 @@
 proxy-groups:
   - name: 🚀 节点选择
     include-all: true
-    type: select
-    proxies:
-      - ♻️ 自动选择
-      - DIRECT
+    输入: select
+
 
   - name: ♻️ 自动选择
-    type: url-test
+    输入: url-test
     include-all: true
     interval: 300
     tolerance: 50
 
   - name: 🎯 全球直连
-    type: select
+    输入: select
     proxies:
       - DIRECT
       - 🚀 节点选择
 
   - name: 🛑 全球拦截
-    type: select
+    输入: select
     proxies:
       - REJECT
       - DIRECT
 
   - name: 🐟 漏网之鱼
-    type: select
+    输入: select
     proxies:
       - DIRECT
       - 🚀 节点选择
@@ -38,28 +36,28 @@ rule-providers:
     behavior: classical
     interval: 86400
     format: text
-    type: http
+    输入: http
   UnBan:
     url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/UnBan.list
     path: ./ruleset/UnBan.list
     behavior: classical
     interval: 86400
     format: text
-    type: http
+    输入: http
   BanAD:
     url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list
     path: ./ruleset/BanAD.list
     behavior: classical
     interval: 86400
     format: text
-    type: http
+    输入: http
   BanProgramAD:
     url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanProgramAD.list
     path: ./ruleset/BanProgramAD.list
     behavior: classical
     interval: 86400
     format: text
-    type: http
+    输入: http
   GoogleCN:
     url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/GoogleCN.list
     path: ./ruleset/GoogleCN.list
